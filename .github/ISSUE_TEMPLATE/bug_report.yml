@@ -1,0 +1,87 @@
+name: Bug report
+description: Report a reproducible problem with scanning, output, or the CLI.
+title: "[Bug]: "
+labels:
+  - bug
+  - triage
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug.
+
+        **Do not attach proprietary, confidential, or live malware samples.**
+        Use a minimal synthetic reproducer whenever possible. Security issues
+        should be reported privately as described in `SECURITY.md`.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A clear and concise description of the problem.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Include the exact command line and, if possible, a minimal sample.
+      placeholder: |
+        1. Run `revertoken ...`
+        2. Observe ...
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: ReverToken version
+      description: Output of `revertoken --version`.
+      placeholder: revertoken 0.1.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Linux
+        - Windows
+        - macOS
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: target_format
+    attributes:
+      label: Input format
+      description: PE, ELF, Mach-O, or unknown.
+      placeholder: ELF64 x86-64 `.so`
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Actual output
+      description: Paste the command output. Remove sensitive paths or symbol names.
+      render: shell
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and did not find a duplicate.
+          required: true
+        - label: I have removed sensitive or proprietary data from this report.
+          required: true

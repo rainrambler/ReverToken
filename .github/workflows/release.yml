@@ -1,0 +1,118 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    name: Build ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            target: x86_64-unknown-linux-gnu
+            binary: revertoken
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            binary: revertoken.exe
+          - os: macos-14
+            target: aarch64-apple-darwin
+            binary: revertoken
+          - os: macos-14
+            target: x86_64-apple-darwin
+            binary: revertoken
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Cache Cargo
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.target }}
+
+      - name: Build release binary
+        run: cargo build --release --locked --target ${{ matrix.target }}
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: revertoken-${{ matrix.target }}
+          path: target/${{ matrix.target }}/release/${{ matrix.binary }}
+          if-no-files-found: error
+          retention-days: 7
+
+  publish:
+    name: Publish GitHub release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download binaries
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Package archives
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          DIST="$PWD/dist"
+          mkdir -p "$DIST"
+
+          package_tar() {
+            target="$1"
+            binary="$2"
+            source="artifacts/revertoken-${target}/${binary}"
+            test -f "$source"
+            stage="$(mktemp -d)"
+            cp "$source" "$stage/$binary"
+            cp README.md README.zh-CN.md LICENSE "$stage/"
+            chmod +x "$stage/$binary"
+            tar -czf "$DIST/revertoken-${TAG}-${target}.tar.gz" -C "$stage" "$binary" README.md README.zh-CN.md LICENSE
+          }
+
+          package_zip() {
+            target="$1"
+            binary="$2"
+            source="artifacts/revertoken-${target}/${binary}"
+            test -f "$source"
+            stage="$(mktemp -d)"
+            cp "$source" "$stage/$binary"
+            cp README.md README.zh-CN.md LICENSE "$stage/"
+            (cd "$stage" && zip -q "$DIST/revertoken-${TAG}-${target}.zip" "$binary" README.md README.zh-CN.md LICENSE)
+          }
+
+          package_tar x86_64-unknown-linux-gnu revertoken
+          package_zip x86_64-pc-windows-msvc revertoken.exe
+          package_tar aarch64-apple-darwin revertoken
+          package_tar x86_64-apple-darwin revertoken
+
+          (cd "$DIST" && sha256sum ./* > SHA256SUMS)
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ReverToken ${{ github.ref_name }}
+          files: dist/*
+          generate_release_notes: true
+          prerelease: ${{ contains(github.ref_name, '-') }}

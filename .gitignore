@@ -1,0 +1,27 @@
+# Rust build output
+/target/
+
+# Local Cargo home used by restricted sandboxes
+/.cargo-home/
+
+# Packaging output
+/dist/
+
+# Fixture build by-products
+/tests/fixtures/*.lib
+
+# Coverage
+/coverage/
+*.profraw
+*.profdata
+lcov.info
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editors
+.idea/
+.vscode/
+*.swp
+*.swo

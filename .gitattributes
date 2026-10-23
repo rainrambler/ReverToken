@@ -1,0 +1,18 @@
+# Normalize text files to LF in the repository.
+* text=auto eol=lf
+
+*.sh text eol=lf
+*.rs text eol=lf
+*.toml text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.md text eol=lf
+
+# Binary test fixtures
+*.dll binary
+*.exe binary
+*.so binary
+*.dylib binary
+*.a binary
+*.o binary
+*.zip binary
