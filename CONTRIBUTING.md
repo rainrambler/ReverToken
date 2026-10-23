@@ -23,9 +23,9 @@ Security vulnerabilities must be reported privately following
 
 ReverToken requires Rust **1.85 or newer** and uses edition 2024.
 
+From a checkout of the repository:
+
 ```sh
-git clone <repository-url>
-cd <repository-directory>
 cargo build
 cargo test
 ```

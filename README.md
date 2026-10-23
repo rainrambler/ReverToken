@@ -86,9 +86,9 @@ in **System Settings → Privacy & Security** on first launch.
 
 Rust **1.85 or newer** is required (the project uses edition 2024).
 
+From a checkout of this repository:
+
 ```sh
-git clone <repository-url>
-cd <repository-directory>
 cargo install --path .
 ```
 

@@ -80,9 +80,9 @@ Linux 压缩包面向 glibc 2.35（Ubuntu 22.04）及以上环境。macOS 压缩
 
 需要 Rust **1.85 或更高版本**（项目使用 edition 2024）。
 
+在仓库检出目录中执行：
+
 ```sh
-git clone <repository-url>
-cd <repository-directory>
 cargo install --path .
 ```
 
