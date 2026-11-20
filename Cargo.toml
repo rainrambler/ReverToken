@@ -17,7 +17,7 @@ path = "src/main.rs"
 [dependencies]
 anyhow = "1"
 clap = { version = "4.5", features = ["derive"] }
-cpp_demangle = "0.5"
+cpp_demangle = "0.6"
 goblin = "0.10"
 msvc-demangler = "0.11"
 serde = { version = "1", features = ["derive"] }
